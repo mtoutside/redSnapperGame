@@ -2,7 +2,7 @@
 
 Bite! Bite! Bite! Bite small fishes! Avoid enemy!
 
-![](header.png)
+![screenshot](https://user-images.githubusercontent.com/36859332/57440309-bcc73e80-7282-11e9-924c-793b72f11ccf.png)
 
 ## How to play
 
@@ -19,15 +19,6 @@ mtoutside – [@mtoutside](https://twitter.com/mtoutside)
 ympbyc – [ympbyc](https://github.com/ympbyc)
 
 Distributed under the GPL v3.0 license. See ``LICENSE`` for more information.
-
-
-## Contributing
-
-1. Fork it (<https://github.com/yourname/yourproject/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
 
 ## Acknowledgments
 
