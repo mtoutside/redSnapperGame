@@ -141,17 +141,19 @@ let sketch = function(s) {
      *
      * @returns {null}
      */
-	Player = function() {
-		this.position = s.createVector(s.random(s.width), s.height / s.random(1, 5));
-		this.r = 15;
-		this.heading = 0;
-		this.rotation = 0;
-		this.vel = s.createVector(0, 0);
-		this.isBoosting = false;
-        this.theta = 0;
-        this.color = { filet: s.color(242, 166, 118), body: s.color(242, 58, 12) };
+	class Player {
+		constructor() {
+			this.position = s.createVector(s.random(s.width), s.height / s.random(1, 5));
+			this.r = 15;
+			this.heading = 0;
+			this.rotation = 0;
+			this.vel = s.createVector(0, 0);
+			this.isBoosting = false;
+			this.theta = 0;
+			this.color = { filet: s.color(242, 166, 118), body: s.color(242, 58, 12) };
+		}
 
-        this.move = function() {
+        move() {
             if(s.keyIsDown(s.RIGHT_ARROW)) {
                 player.setRotation(0.1);
             } else if(s.keyIsDown(s.LEFT_ARROW)) {
@@ -161,11 +163,11 @@ let sketch = function(s) {
             }
         }
 
-		this.boosting = function(b) {
+		boosting(b) {
 			this.isBoosting = b;
 		}
 
-		this.update = function() {
+		update() {
 			if(this.isBoosting) {
 				this.boost();
 			}
@@ -175,13 +177,13 @@ let sketch = function(s) {
 			this.vel.mult(0.95);
 		}
 
-		this.boost = function() {
+		boost() {
 			let force = p5.Vector.fromAngle(this.heading);
 			force.mult(0.5);
 			this.vel.add(force);
 		}
 
-		this.hits = function(boids) {
+		hits(boids) {
 			let d = s.dist(this.position.x, this.position.y, boids.position.x, boids.position.y);
 			if(d < this.r + boids.r) {
 				return true;
@@ -190,7 +192,7 @@ let sketch = function(s) {
 			}
 		}
 
-		this.render = function() {
+		render() {
 			s.push();
             s.noStroke();
 			s.translate(this.position.x, this.position.y);
@@ -237,18 +239,18 @@ let sketch = function(s) {
             s.pop();
         }
 
-        this.edges = function() {
+        edges() {
             if (this.position.x < -this.r)  this.position.x = s.width + this.r;
             if (this.position.y < -this.r)  this.position.y = s.height + this.r;
             if (this.position.x > s.width + this.r) this.position.x = -this.r;
             if (this.position.y > s.height + this.r) this.position.y = -this.r;
         }
 
-        this.setRotation = function(a) {
+        setRotation(a) {
             this.rotation = a;
         }
 
-        this.turn = function() {
+        turn() {
             this.heading += this.rotation;
         }
     }
@@ -258,30 +260,32 @@ let sketch = function(s) {
      *
      * @returns {null}
      */
-	Enemy = function() {
-		this.position = s.createVector(s.random(s.width), s.random(s.height));
-		this.r = 8;
-		this.velocity = s.createVector(0, 0);
-        this.theta = 0;
-        this.heading = s.radians(90);
-        this.color = { filet: s.color(133, 255, 14), body: s.color(144, 169, 122) };
-        this.acceleration = s.createVector(0, 0);
-        this.maxspeed = s.random(4, 8);
-        this.maxforce = 0.4;
+	class Enemy {
+		constructor() {
+			this.position = s.createVector(s.random(s.width), s.random(s.height));
+			this.r = 8;
+			this.velocity = s.createVector(0, 0);
+			this.theta = 0;
+			this.heading = s.radians(90);
+			this.color = { filet: s.color(133, 255, 14), body: s.color(144, 169, 122) };
+			this.acceleration = s.createVector(0, 0);
+			this.maxspeed = s.random(4, 8);
+			this.maxforce = 0.4;
+		}
 
-        this.applyForce = function(force) {
-            this.acceleration.add(force);
-        };
+		applyForce(force) {
+				this.acceleration.add(force);
+		}
 
-        this.update = function() {
-            this.velocity.add(this.acceleration);
-            this.velocity.limit(this.maxspeed);
-            this.position.add(this.velocity);
-            this.acceleration.mult(0);
-            this.theta += s.PI / 100;
-        };
+		update() {
+				this.velocity.add(this.acceleration);
+				this.velocity.limit(this.maxspeed);
+				this.position.add(this.velocity);
+				this.acceleration.mult(0);
+				this.theta += s.PI / 100;
+		}
 
-        this.seek = function(target) {
+        seek(target) {
             let desired = p5.Vector.sub(target,this.position);
             this.heading = s.atan2(desired.y, desired.x) + s.radians(90);
             desired.normalize();
@@ -289,10 +293,10 @@ let sketch = function(s) {
             let steer = p5.Vector.sub(desired,this.velocity);
             steer.limit(this.maxforce);
             return steer;
-        };
+        }
 
         // Arrive
-        this.arrive = function(x, y) {
+        arrive(x, y) {
             let target = s.createVector(x, y);
             let neighbordist = s.max(s.width, s.height);
 
@@ -307,7 +311,7 @@ let sketch = function(s) {
             this.applyForce(steer);
         }
 
-        this.hits = function(player) {
+        hits(player) {
             let d = s.dist(this.position.x, this.position.y, player.position.x, player.position.y);
             if(d < this.r + player.r) {
                 return true;
@@ -317,7 +321,7 @@ let sketch = function(s) {
         }
 
         // Separation
-        this.separate = function(enemy) {
+        separate(enemy) {
             let desiredseparation = 25.0;
             let steer = s.createVector(0, 0);
             let count = 0;
@@ -343,9 +347,9 @@ let sketch = function(s) {
             steer.mult(1.5);
             steer.limit(this.maxforce);
             this.applyForce(steer);
-        };
+        }
 
-        this.render = function() {
+        render() {
             s.push();
             s.noStroke();
             s.translate(this.position.x, this.position.y);
@@ -393,7 +397,7 @@ let sketch = function(s) {
 
         }
 
-        this.edges = function() {
+        edges() {
             if (this.position.x < -this.r)  this.position.x = s.width + this.r;
             if (this.position.y < -this.r)  this.position.y = s.height + this.r;
             if (this.position.x > s.width + this.r) this.position.x = -this.r;
