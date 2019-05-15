@@ -408,28 +408,30 @@ let sketch = function(s) {
     // Flock object
     // Does very little, simply manages the array of all the boids
 
-    Flock = function() {
-        // An array for all the boids
-        this.boids = []; // Initialize the array
-    };
+    class Flock {
+			constructor() {
+				// An array for all the boids
+				this.boids = []; // Initialize the array
+			}
 
-    Flock.prototype.run = function() {
-        for (let i = this.boids.length - 1; i >= 0;  i--) {
-            this.boids[i].run(this.boids);  // Passing the entire list of boids to each boid individually
+			run() {
+					for (let i = this.boids.length - 1; i >= 0;  i--) {
+							this.boids[i].run(this.boids);  // Passing the entire list of boids to each boid individually
 
-            //小魚に衝突した時
-            if(player.hits(this.boids[i])) {
-                eat.play();
-                this.boids.splice(i, 1);
-                count++;
-            }
-        }
-    };
+							//小魚に衝突した時
+							if(player.hits(this.boids[i])) {
+									eat.play();
+									this.boids.splice(i, 1);
+									count++;
+							}
+					}
+			}
 
 
-    Flock.prototype.addBoid = function(b) {
-        this.boids.push(b);
-    };
+			addBoid(b) {
+					this.boids.push(b);
+			}
+		}
 
     // 速度場のピクセルを読み取る
     readVelocityAt = function (x, y) {
@@ -443,16 +445,17 @@ let sketch = function(s) {
         return s.createVector( pixel[0], pixel[1] );
     };
 
-    Boid = function(x, y) {
+    class Boid {
+			constructor(x, y) {
         this.acceleration = s.createVector(0, 0);
         this.velocity = s.createVector(s.random(-1, 1), s.random(-1, 1));
         this.position = s.createVector(x, y);
         this.r = s.random(2.5, 5.0);
         this.maxspeed = 4;    // Maximum speed
         this.maxforce = 0.2; // Maximum steering force
-    };
+			}
 
-    Boid.prototype.run = function(boids) {
+    run(boids) {
         this.flock(boids);
         this.avoid(player.position.x, player.position.y);
         for(let i = enemy.length -1; i >= 0; i--) {
@@ -462,15 +465,15 @@ let sketch = function(s) {
         this.update();
         this.borders();
         this.render();
-    };
+    }
 
-    Boid.prototype.applyForce = function(force) {
+    applyForce(force) {
         // We could add mass here if we want A = F / M
         this.acceleration.add(force);
-    };
+    }
 
     // We accumulate a new acceleration each time based on three rules
-    Boid.prototype.flock = function(boids) {
+    flock(boids) {
         let sep = this.separate(boids);   // Separation
         let ali = this.align(boids);      // Alignment
         let coh = this.cohesion(boids);   // Cohesion
@@ -483,10 +486,10 @@ let sketch = function(s) {
         this.applyForce(ali);
         this.applyForce(coh);
 
-    };
+    }
 
     // 速度場の流れに従う
-    Boid.prototype.follow = function() {
+    follow() {
         let desired = readVelocityAt(Math.floor(window.innerWidth - this.position.x), Math.floor(window.innerHeight - this.position.y));
         desired.normalize();
         desired.mult(this.maxspeed);
@@ -498,19 +501,19 @@ let sketch = function(s) {
     }
 
     // Method to update location
-    Boid.prototype.update = function() {
-	// Update velocity
-	this.velocity.add(this.acceleration);
-	// Limit speed
-        this.velocity.limit(this.maxspeed);
-	this.position.add(this.velocity);
-	// Reset accelertion to 0 each cycle
-	this.acceleration.mult(0);
-    };
+    update() {
+			// Update velocity
+			this.velocity.add(this.acceleration);
+			// Limit speed
+						this.velocity.limit(this.maxspeed);
+			this.position.add(this.velocity);
+			// Reset accelertion to 0 each cycle
+			this.acceleration.mult(0);
+    }
 
     // A method that calculates and applies a steering force towards a target
     // STEER = DESIRED MINUS VELOCITY
-    Boid.prototype.seek = function(target) {
+    seek(target) {
         let desired = p5.Vector.sub(target,this.position);  // A vector pointing from the location to the target
         // Normalize desired and scale to maximum speed
         desired.normalize();
@@ -519,9 +522,9 @@ let sketch = function(s) {
         let steer = p5.Vector.sub(desired,this.velocity);
         steer.limit(this.maxforce);  // Limit to maximum steering force
         return steer;
-    };
+    }
 
-    Boid.prototype.render = function() {
+    render() {
         // Draw a triangle rotated in the direction of velocity
         let theta = this.velocity.heading() + s.radians(90);
         s.noStroke();
@@ -539,19 +542,19 @@ let sketch = function(s) {
         s.curveVertex(0, 2.5 * this.r * 1.5);
         s.endShape(s.CLOSE);
         s.pop();
-    };
+    }
 
     // Wraparound
-    Boid.prototype.borders = function() {
+    borders() {
         if (this.position.x < -this.r)  this.position.x = s.width + this.r;
         if (this.position.y < -this.r)  this.position.y = s.height + this.r;
         if (this.position.x > s.width + this.r) this.position.x = -this.r;
         if (this.position.y > s.height + this.r) this.position.y = -this.r;
-    };
+    }
 
     // Separation
     // Method checks for nearby boids and steers away
-    Boid.prototype.separate = function(boids) {
+    separate(boids) {
         let desiredseparation = 25.0;
         let steer = s.createVector(0, 0);
         let count = 0;
@@ -582,11 +585,11 @@ let sketch = function(s) {
             steer.limit(this.maxforce);
         }
         return steer;
-    };
+    }
 
     // Alignment
     // For every nearby boid in the system, calculate the average velocity
-    Boid.prototype.align = function(boids) {
+    align(boids) {
         let neighbordist = 50;
         let sum = s.createVector(0,0);
         let count = 0;
@@ -607,11 +610,11 @@ let sketch = function(s) {
         } else {
             return s.createVector(0, 0);
         }
-    };
+    }
 
     // Cohesion
     // For the average location (i.e. center) of all nearby boids, calculate steering vector towards that location
-    Boid.prototype.cohesion = function(boids) {
+    cohesion(boids) {
         let neighbordist = 50;
         let sum = s.createVector(0, 0);   // Start with empty vector to accumulate all locations
         let count = 0;
@@ -629,11 +632,11 @@ let sketch = function(s) {
         } else {
             return s.createVector(0, 0);
         }
-    };
+    }
 
     // Avoid
     // Avoiding from target
-    Boid.prototype.avoid = function(x, y) {
+    avoid(x, y) {
         let target = s.createVector(x, y);
         let neighbordist = 250;
 
@@ -648,4 +651,5 @@ let sketch = function(s) {
         steer.limit(this.maxforce);
         this.applyForce(steer);
     }
-};
+	}
+}
