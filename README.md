@@ -14,9 +14,9 @@ Manipulate red snapper and eat small fishes. However, be careful with green fish
 
 ## Meta
 
-mtoutside – [@mtoutside](https://twitter.com/mtoutside)
+[mtoutside](https://github.com/mtoutside) – [@mtoutside](https://twitter.com/kvltcoder)
 
-ympbyc – [ympbyc](https://github.com/ympbyc)
+[ympbyc](https://github.com/ympbyc) – [@ympbyc](https://twitter.com/ympbyc)
 
 Distributed under the GPL v3.0 license. See ``LICENSE`` for more information.
 
