@@ -19,7 +19,7 @@ let sketch = function(s) {
             console.log(shader._fragSource);
             shader.create();
         };
-        swapFragShader(gpu_fluid_main.fluid.applyForcesShader, "/shaders/glsl/mouseforce.frag.glsl");
+        swapFragShader(gpu_fluid_main.fluid.applyForcesShader, "./shaders/glsl/mouseforce.frag.glsl");
 
         let swapVertShader = async function swapFragShader (shader, shaderLoc, beforeCreate) {
             let resp = await fetch(shaderLoc);
@@ -27,15 +27,15 @@ let sketch = function(s) {
             if (beforeCreate) beforeCreate(shader);
             shader.create();
         };
-        swapVertShader(gpu_fluid_main.renderParticlesShader, "/shaders/glsl/renderparticleshader.vert");
+        swapVertShader(gpu_fluid_main.renderParticlesShader, "./shaders/glsl/renderparticleshader.vert");
 
         // サウンドファイル
-        bgm = s.loadSound('/assets/sounds/bgm.mp3');
-        eat = s.loadSound('/assets/sounds/eat.mp3');
-        end = s.loadSound('/assets/sounds/end.mp3');
+        bgm = s.loadSound('./assets/sounds/bgm.mp3');
+        eat = s.loadSound('./assets/sounds/eat.mp3');
+        end = s.loadSound('./assets/sounds/end.mp3');
 
         //フォントファイル
-        myFont = s.loadFont('/assets/fonts/PressStart2P.ttf');
+        myFont = s.loadFont('./assets/fonts/PressStart2P.ttf');
     }
 
     s.setup = function() {
