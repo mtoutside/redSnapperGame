@@ -2,7 +2,7 @@
 
 @font-face {
 	font-family: 'press';
-	src: url(/assets/fonts/PressStart2P.ttf);
+	src: url(./assets/fonts/PressStart2P.ttf);
 }
 
 body {
